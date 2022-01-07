@@ -1,0 +1,4 @@
+name: PartyPlugin
+version: '${project.version}'
+main: com.akutasan.partyplugin.Party
+description: Party Plugin for ABMC
