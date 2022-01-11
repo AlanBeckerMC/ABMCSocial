@@ -1,6 +1,6 @@
-package com.akutasan.partyplugin.manager;
+package com.akutasan.abmcsocial.manager;
 
-import com.akutasan.partyplugin.Party;
+import com.akutasan.abmcsocial.ABMCSocial;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -9,9 +9,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class FileManager {
-    Party plugin;
+    ABMCSocial plugin;
 
-    public FileManager(Party plugin){
+    public FileManager(ABMCSocial plugin){
         this.plugin = plugin;
     }
 

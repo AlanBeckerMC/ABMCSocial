@@ -1,8 +1,8 @@
-package com.akutasan.partyplugin.Listener;
+package com.akutasan.abmcsocial.party.Listener;
 
-import com.akutasan.partyplugin.Party;
-import com.akutasan.partyplugin.manager.PartyManager;
-import com.akutasan.partyplugin.manager.PlayerParty;
+import com.akutasan.abmcsocial.ABMCSocial;
+import com.akutasan.abmcsocial.party.manager.P_Manager;
+import com.akutasan.abmcsocial.party.manager.P_Player;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -12,23 +12,23 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.util.concurrent.TimeUnit;
 
-public class ServerDisconnect implements Listener {
+public class P_ServerDisconnect implements Listener {
     @EventHandler
     public void onDisconnect(PlayerDisconnectEvent e) {
         ProxiedPlayer p = e.getPlayer();
-        if (PartyManager.getParty(p) != null) {
-            PlayerParty party = PartyManager.getParty(p);
+        if (P_Manager.getParty(p) != null) {
+            P_Player party = P_Manager.getParty(p);
             assert party != null;
             if (party.isLeader(p)) {
                 if (party.getPlayers().size() == 1) {
                     for (ProxiedPlayer pp : party.getPlayers()) {
-                        pp.sendMessage(new TextComponent(Party.partyprefix + "§cSince the Party leader §cleft §cthe §cParty, §cthe §cParty §cwas dissolved."));
+                        pp.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cAs the Party leader §cleft §cthe §cParty, §cthe §cParty §cwas dissolved."));
                     }
                     party.removePlayer(p);
-                    PartyManager.deleteParty(p);
+                    P_Manager.deleteParty(p);
                 } else {
                     for (ProxiedPlayer pp : party.getPlayers()) {
-                        pp.sendMessage(new TextComponent(Party.partyprefix + "§cSince the Party leader §cleft §cthe §cParty, §cthe §cparty §cwas dissolved."));
+                        pp.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cAs the Party leader §cleft §cthe §cParty, §cthe §cparty §cwas dissolved."));
                         party.removePlayer(p);
                         party.removePlayer(pp);
                     }
@@ -36,7 +36,7 @@ public class ServerDisconnect implements Listener {
             } else {
                 party.removePlayer(p);
                 for (ProxiedPlayer pp : party.getPlayers()) {
-                    pp.sendMessage(new TextComponent(Party.partyprefix + "§6" + p.getName() + " §chas §cleft the §cParty §c."));
+                    pp.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§6" + p.getName() + " §chas §cleft the §cParty §c."));
                 }
                 start(p);
             }
@@ -45,12 +45,12 @@ public class ServerDisconnect implements Listener {
 
     private void start(final ProxiedPlayer p)
     {
-        ProxyServer.getInstance().getScheduler().schedule(Party.getInstance(), () -> {
-            PlayerParty party = PartyManager.getParty(p);
+        ProxyServer.getInstance().getScheduler().schedule(ABMCSocial.getInstance(), () -> {
+            P_Player party = P_Manager.getParty(p);
             if ((party != null) && (party.getPlayers().size() == 0)) {
                 party.removePlayer(p);
-                party.getLeader().sendMessage(new TextComponent(Party.partyprefix + "§cThe party is §cdissolved because §cof too few members."));
-                p.sendMessage(new TextComponent(Party.partyprefix + "§cThe §cParty §cwas §cdissolved."));
+                party.getLeader().sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cThe party was §cdissolved because §cof too few members."));
+                p.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cThe §cParty §cwas §cdissolved."));
             }
         }, 2L, TimeUnit.MINUTES);
     }

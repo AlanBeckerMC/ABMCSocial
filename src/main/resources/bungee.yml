@@ -1,4 +1,6 @@
-name: PartyPlugin
+author: Akutasan
+main: com.akutasan.abmcsocial.ABMCSocial
+
+name: '${project.name}'
 version: '${project.version}'
-main: com.akutasan.partyplugin.Party
-description: Party Plugin for ABMC
+description: '${project.description}'

@@ -1,6 +1,6 @@
-package com.akutasan.partyplugin.manager;
+package com.akutasan.abmcsocial.party.manager;
 
-import com.akutasan.partyplugin.Party;
+import com.akutasan.abmcsocial.ABMCSocial;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class PlayerParty {
+public class P_Player {
     // Main Management File, majority should be self-explanatory
     private final ProxiedPlayer leader;
     private final List<ProxiedPlayer> invitations;
     private final List<ProxiedPlayer> players;
 
-    public PlayerParty(ProxiedPlayer leader){
+    public P_Player(ProxiedPlayer leader){
         this.leader = leader;
         this.players = new ArrayList<>();
         this.invitations = new ArrayList<>();
@@ -90,39 +90,35 @@ public class PlayerParty {
     // Invite command with in chat click components
     public void invite(final ProxiedPlayer p) {
         this.invitations.add(p);
-        p.sendMessage(new TextComponent(Party.partyprefix + "§a" + getLeader().getName() + " §ahas invited §eyou §ainto §ahis §aParty!"));
-        TextComponent accept = new TextComponent(Party.partyprefix + "§7Click §e§lhere §7to §a§laccept!");
+        p.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§a" + getLeader().getName() + " §ahas invited §eyou §ato §ahis §aParty!"));
+        TextComponent accept = new TextComponent(ABMCSocial.partyprefix + "§7Click §e§lhere §7to §a§laccept!");
         accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party accept " + getLeader().getName()));
         accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§a/party accept §6" + getLeader().getName()).create()));
-        TextComponent deny = new TextComponent(Party.partyprefix + "§7Click §e§lhere §7to §c§ldecline!");
+        TextComponent deny = new TextComponent(ABMCSocial.partyprefix + "§7Click §e§lhere §7to §c§ldecline!");
         deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party deny " + getLeader().getName()));
         deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§c/party deny §6"+getLeader().getName()).create()));
         p.sendMessage(accept);
         p.sendMessage(deny);
-        ProxyServer.getInstance().getScheduler().schedule(Party.getInstance(), new Runnable()
-        {
-            public void run()
+        ProxyServer.getInstance().getScheduler().schedule(ABMCSocial.getInstance(), () -> {
+            if (P_Player.this.hasRequest(p))
             {
-                if (PlayerParty.this.hasRequest(p))
-                {
-                    PlayerParty.this.invitations.remove(p);
-                    p.sendMessage(new TextComponent(Party.partyprefix + "§cYour invitation §cis §cexpired!"));
-                    PlayerParty.this.getLeader().sendMessage(new TextComponent(Party.partyprefix + "§cThe invitation to §e" + p.getName() + " §chas expired!"));
-                }
-                PlayerParty.this.start(p);
+                P_Player.this.invitations.remove(p);
+                p.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cYour invitation §chas §cexpired!"));
+                P_Player.this.getLeader().sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cThe invitation to §e" + p.getName() + " §chas expired!"));
             }
+            P_Player.this.start(p);
         }, 5L, TimeUnit.MINUTES);
     }
 
     // Two minute timer once only one party member is in party
     private void start(final ProxiedPlayer p) {
-        ProxyServer.getInstance().getScheduler().schedule(Party.getInstance(), () -> {
-            PlayerParty party = PartyManager.getParty(p);
+        ProxyServer.getInstance().getScheduler().schedule(ABMCSocial.getInstance(), () -> {
+            P_Player party = P_Manager.getParty(p);
             if ((party != null) && (party.getPlayers().size() == 0))
             {
-                PartyManager.deleteParty(p);
-                party.getLeader().sendMessage(new TextComponent(Party.partyprefix + "§cThe Party §cis dissolved because of too §cfew §cmembers!"));
-                p.sendMessage(new TextComponent(Party.partyprefix + "§cThe Party §cwas §cdissolved!"));
+                P_Manager.deleteParty(p);
+                party.getLeader().sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cThe Party §cwas dissolved because of too §cfew §cmembers!"));
+                p.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cThe Party §cwas §cdissolved!"));
             }
         }, 2L, TimeUnit.MINUTES);
     }

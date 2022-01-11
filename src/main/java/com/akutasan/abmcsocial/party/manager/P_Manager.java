@@ -1,4 +1,4 @@
-package com.akutasan.partyplugin.manager;
+package com.akutasan.abmcsocial.party.manager;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -6,11 +6,11 @@ import net.md_5.bungee.api.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartyManager extends Plugin {
-    private static final List<PlayerParty> parties = new ArrayList<>();
+public class P_Manager extends Plugin {
+    private static final List<P_Player> parties = new ArrayList<>();
 
-    public static PlayerParty getParty(ProxiedPlayer p) {
-        for (PlayerParty party : parties) {
+    public static P_Player getParty(ProxiedPlayer p) {
+        for (P_Player party : parties) {
             if (party.isInParty(p)) {
                 return party;
             }
@@ -20,7 +20,7 @@ public class PartyManager extends Plugin {
 
     public static void createParty(ProxiedPlayer p) {
         if (getParty(p) == null) {
-            parties.add(new PlayerParty(p));
+            parties.add(new P_Player(p));
         }
     }
 
@@ -28,7 +28,7 @@ public class PartyManager extends Plugin {
         parties.remove(getParty(p));
     }
 
-    public static List<PlayerParty> getPartys()
+    public static List<P_Player> getParties()
     {
         return parties;
     }

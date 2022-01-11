@@ -1,6 +1,7 @@
-package com.akutasan.partyplugin.commands;
+package com.akutasan.abmcsocial.friends.commands;
 
-import com.akutasan.partyplugin.Party;
+import com.akutasan.abmcsocial.ABMCSocial;
+import com.akutasan.abmcsocial.manager.SubCommand;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -12,45 +13,31 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-public class PartyCommand extends Command {
+public class F_Command extends Command {
     private final List<SubCommand> cmds = new ArrayList<>();
 
-    public PartyCommand()
-    {
-        super("party", "", "p");
-        this.cmds.add(new PartyInvite());
-        this.cmds.add(new PartyAccept());
-        this.cmds.add(new PartyDeny());
-        this.cmds.add(new PartyList());
-        this.cmds.add(new PartyLeave());
-        this.cmds.add(new PartyKick());
+    public F_Command(){
+        super("friend", "", "friends");
+        this.cmds.add(new F_Add());
     }
 
-    public void execute(CommandSender sender, String[] args)
-    {
-        if (!(sender instanceof ProxiedPlayer))
-        {
-            sender.sendMessage(new TextComponent(Party.partyprefix + "§cThis is not a Console Command!"));
+    public void execute(CommandSender sender, String[] args){
+        if (!(sender instanceof ProxiedPlayer)){
+            sender.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cThis is not a Console Command!"));
             return;
         }
         ProxiedPlayer p = (ProxiedPlayer)sender;
-        if (args.length == 0 || args[0].equalsIgnoreCase("help"))
-        {
-            for (SubCommand sc : this.cmds)
-            {
-                TextComponent t = new TextComponent(Party.partyprefix + "§e/party " + aliases(sc) + " " + sc.getUsage() + " §7" + sc.getMessage());
-                t.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/party " + aliases(sc) + " "));
+        if (args.length == 0 || args[0].equalsIgnoreCase("help")){
+            for (SubCommand sc : this.cmds){
+                TextComponent t = new TextComponent(ABMCSocial.partyprefix + "§e/friend " + aliases(sc) + " " + sc.getUsage() + " §7" + sc.getMessage());
+                t.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/friend " + aliases(sc) + " "));
                 p.sendMessage(t);
             }
-            TextComponent t = new TextComponent(Party.partyprefix + "§e/p <Message>");
-            t.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/p "));
-            p.sendMessage(t);
             return;
         }
         SubCommand sc = getCommand(args[0]);
-        if (sc == null)
-        {
-            p.sendMessage(new TextComponent(Party.partyprefix + "§cThis is not a valid §ccommand!"));
+        if (sc == null){
+            p.sendMessage(new TextComponent(ABMCSocial.partyprefix + "§cThat is not a valid §ccommand!"));
             return;
         }
         Object a = new Vector<>(Arrays.asList(args));
@@ -59,8 +46,7 @@ public class PartyCommand extends Command {
         sc.onCommand(p, args);
     }
 
-    private String aliases(SubCommand sc)
-    {
+    private String aliases(SubCommand sc){
         StringBuilder fin = new StringBuilder();
         String[] arrstring = sc.getAliases();
         int n = arrstring.length;
@@ -74,8 +60,7 @@ public class PartyCommand extends Command {
         return fin.substring(0, fin.lastIndexOf(" | "));
     }
 
-    private SubCommand getCommand(String name)
-    {
+    private SubCommand getCommand(String name){
         int n2;
         for (SubCommand sc : this.cmds) {
             if (sc.getClass().getSimpleName().equalsIgnoreCase(name)) {

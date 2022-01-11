@@ -1,4 +1,4 @@
-package com.akutasan.partyplugin.commands;
+package com.akutasan.abmcsocial.manager;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
